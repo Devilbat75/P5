@@ -9,11 +9,21 @@ searchId();
 async function searchId() {
   await fetch('http://localhost:3000/api/products/' + id)
     .then((reponse) => reponse.json())
-    .then((data) => {
-      console.log(data)
-      document.querySelector('.item__img').innerHTML += `<img src="${data.imageUrl}" alt="${data.altTxt}">`;
-      document.querySelector('#title').textContent = data.name;
-      document.querySelector('#price').textContent = data.price;
-      document.querySelector('#description').textContent = data.description;
-    })
-};
+    .then((data) => { affichageCanape(data); })
+}
+
+let articleClient = {};
+articleClient = id;
+
+function affichageCanape(canape) {
+
+  document.querySelector('.item__img').innerHTML += `<img src="${canape.imageUrl}" alt="${canape.altTxt}">`;
+  document.querySelector('#title').textContent = canape.name;
+  document.querySelector('#price').textContent = canape.price;
+  document.querySelector('#description').textContent = canape.description;
+
+  for (let couleur of canape.colors) {
+    document.querySelector("#colors").innerHTML += `<option value="${couleur}" > ${couleur} </option>`;
+  }
+
+}
