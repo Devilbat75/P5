@@ -25,6 +25,28 @@ function affichageCanape(canape) {
   for (let couleur of canape.colors) {
     document.querySelector("#colors").innerHTML += `<option value="${couleur}" > ${couleur} </option>`;
   }
-
 }
 
+let choixProduit = document.querySelector("#addToCart");
+choixProduit.addEventListener("click", async () => {  //on met async pour utiliser await sur ajouterAuPanier
+
+    let choixQuantite = document.querySelector("#quantity").value;
+    let choixCouleur = document.querySelector("#colors").value;
+    if (
+        choixQuantite < 1 ||
+        choixQuantite > 100 ||
+        choixQuantite === undefined ||
+        choixCouleur === "" ||
+        choixCouleur === undefined
+    ) {
+        // active alert si l'une des conditions au dessus est active
+        alert("pour valider le chois de cet article, veuillez renseigner une couleur, et /ou une quantité valide entre 1 et 100")
+    } else {
+        articleClient.quantite = parseInt(choixQuantite);
+        articleClient.couleur = choixCouleur;
+        // montre panier 
+        await addPanier(articleClient);
+        alert("l'article a bien été ajouté au panier");
+        window.location.assign("cart.html")
+    }
+})
