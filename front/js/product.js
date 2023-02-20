@@ -30,23 +30,48 @@ function affichageCanape(canape) {
 let choixProduit = document.querySelector("#addToCart");
 choixProduit.addEventListener("click", async () => {  //on met async pour utiliser await sur ajouterAuPanier
 
-    let choixQuantite = document.querySelector("#quantity").value;
-    let choixCouleur = document.querySelector("#colors").value;
-    if (
-        choixQuantite < 1 ||
-        choixQuantite > 100 ||
-        choixQuantite === undefined ||
-        choixCouleur === "" ||
-        choixCouleur === undefined
-    ) {
-        // active alert si l'une des conditions au dessus est active
-        alert("pour valider le chois de cet article, veuillez renseigner une couleur, et /ou une quantité valide entre 1 et 100")
-    } else {
-        articleClient.quantite = parseInt(choixQuantite);
-        articleClient.couleur = choixCouleur;
-        // montre panier 
-        await addPanier(articleClient);
-        alert("l'article a bien été ajouté au panier");
-        window.location.assign("cart.html")
-    }
+  let choixQuantite = document.querySelector("#quantity").value;
+  let choixCouleur = document.querySelector("#colors").value;
+  if (
+    choixQuantite < 1 ||
+    choixQuantite > 100 ||
+    choixQuantite === undefined ||
+    choixCouleur === "" ||
+    choixCouleur === undefined
+  ) {
+    // active alert si l'une des conditions au dessus est active
+    alert("pour valider le chois de cet article, veuillez renseigner une couleur, et /ou une quantité valide entre 1 et 100")
+  } else {
+    articleClient.quantite = parseInt(choixQuantite);
+    articleClient.couleur = choixCouleur;
+    // montre panier 
+    await addPanier(articleClient);
+    alert("l'article a bien été ajouté au panier");
+    window.location.assign("cart.html")
+  }
 })
+
+function addQuantitytoPanier() {
+  //récupère la quantité et la couleur du produit
+  const newQuantity = document.querySelector('#quantity').value;
+  const currentColor = document.querySelector('#colors').value;
+
+  if (newQuantity > 0 && newQuantity <= 100 && currentColor != '') {
+    let arrayProduct = JSON.parse(localStorage.getItem('produit'))
+  }
+
+  let produitJson = {
+    id: varId,
+    quantity: parseInt(newQuantity),
+    color: currentColor,
+  }
+
+  if (arrayProduct == null) {
+    arrayProduct = [];
+    arrayProduct.push(produitJson);
+  }
+
+  else {
+    const productSearch = arrayProduct.find ((produit) => produit.id == produitJson.id && produit.color == produitJson.color);
+  }
+}
