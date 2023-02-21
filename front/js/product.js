@@ -50,28 +50,3 @@ choixProduit.addEventListener("click", async () => {  //on met async pour utilis
     window.location.assign("cart.html")
   }
 })
-
-function addQuantitytoPanier() {
-  //récupère la quantité et la couleur du produit
-  const newQuantity = document.querySelector('#quantity').value;
-  const currentColor = document.querySelector('#colors').value;
-
-  if (newQuantity > 0 && newQuantity <= 100 && currentColor != '') {
-    let arrayProduct = JSON.parse(localStorage.getItem('produit'))
-  }
-
-  let produitJson = {
-    id: varId,
-    quantity: parseInt(newQuantity),
-    color: currentColor,
-  }
-
-  if (arrayProduct == null) {
-    arrayProduct = [];
-    arrayProduct.push(produitJson);
-  }
-
-  else {
-    const productSearch = arrayProduct.find ((produit) => produit.id == produitJson.id && produit.color == produitJson.color);
-  }
-}
