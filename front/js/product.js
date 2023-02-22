@@ -1,5 +1,4 @@
 // récupération de l'id du produit via l'URL
-//-------------------------------------------
 const params = new URLSearchParams(document.location.search);
 const id = params.get("id")
 
@@ -9,21 +8,25 @@ searchId();
 async function searchId() {
   await fetch('http://localhost:3000/api/products/' + id)
     .then((reponse) => reponse.json())
-    .then((data) => { affichageCanape(data); })
+    .then((objetProduit) => { lesProduits(objetProduit); })
 }
 
 let articleClient = {};
 articleClient = id;
 
-function affichageCanape(canape) {
+function lesProduits(produit) {
+  let imageAlt = document.querySelector("article div.item__img");
+  let titre = document.querySelector("#title");
+  let prix = document.querySelector("#price");
+  let description = document.querySelector("#description");
+  let couleurOption = document.querySelector("#colors")
 
-  document.querySelector('.item__img').innerHTML += `<img src="${canape.imageUrl}" alt="${canape.altTxt}">`;
-  document.querySelector('#title').textContent = canape.name;
-  document.querySelector('#price').textContent = canape.price;
-  document.querySelector('#description').textContent = canape.description;
-
-  for (let couleur of canape.colors) {
-    document.querySelector("#colors").innerHTML += `<option value="${couleur}" > ${couleur} </option>`;
+  imageAlt.innerHTML = `<img src ="${produit.imageUrl}" alt= "${produit.altTxt}">`
+  titre.textContent = produit.name;
+  prix.textContent = produit.price;
+  description.textContent = produit.description;
+  for (let couleur of produit.colors) {
+      couleurOption.innerHTML += `<option value="${couleur}" > ${couleur} </option>`;
   }
 }
 

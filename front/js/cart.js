@@ -1,2 +1,2 @@
-localStorage.getItem(produit);
-console.log(produit);
+//récuperer les données dans le local storage
+let articleClient = getPanier;
