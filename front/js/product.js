@@ -61,7 +61,7 @@ choixProduit.addEventListener("click", async () => {  //on met async pour tuilis
     choixCouleur === undefined
   ) {
     // active alert
-    alert("pour valider le chois de cet article, veuillez renseigner une couleur, et /ou une quantité valide entre 1 et 100")
+    alert("pour valider le choix de cet article, veuillez renseigner une couleur, et /ou une quantité valide entre 1 et 100")
   } else {
     articleClient.quantite = parseInt(choixQuantite);
     articleClient.couleur = choixCouleur;

@@ -28,25 +28,30 @@ async function cartInit() {
     await fetchProducts()
     await affichageProduits()
     changeQuantity()
-    deleteProducts()
+    //deleteProducts()
 }
 
 cartInit()
 
 //Récuperation des données de l'API
+// Récuppération des données de l'API
 async function fetchProducts() {
-    await fetch('http://localhost:3000/api/products/')
-        .then((reponse) => reponse.json())
+    await fetch("http://localhost:3000/api/products")
+        .then((res) => res.json())
         .then((data) => (allProductsApi = data))
+        .catch((error) => {
+            console.log(
+                "Il y a eu un problème avec l'opération fetch : " + error.message
+            )
+        })
 }
 
 //Affichage des produits
 async function affichageProduits() {
-    const panierCart = document.getElementById(".cart__items");
-    panier = getPanier()
+    const panierCart = document.getElementById("cart__items");
+    panier = getPanier();
     let panierHtml = [];
     console.log(panier)
-
     //Si un élément est présent dans le panier alors executer ce code
     if (panier && panier.length > 0) {
         //Si le panier n'est pas vide alors ca rajoute un produit
@@ -56,6 +61,8 @@ async function affichageProduits() {
                 (product) => product.id == panier[i].id
             )
             //Création de la carte des produits
+            panier.find(p => p.id == produit.id) && panier.find(p => p.couleur == produit.couleur)
+
             panierHtml += `<article class="cart__item" data-id="${panier[i].id}" data-color="${panier[i].couleur}">
         <div class="cart__item__img">
           <img src="${produit.imageUrl}" alt="${produit.altTxt}">
@@ -101,11 +108,13 @@ function sumQuantity(array) {
     }
 }
 
-//Calcul du prix 
+//Calcul du prix
 function sumPrice() {
     let totalPrice = 0
-    if (panier.length > 0) {
-        const selectedProduct = allProductsApi.find((product) => product.id == panier[i].id)
+    for (let i = 0; i < panier.length; i++) {
+        const selectedProduct = allProductsApi.find(
+            (product) => product._id == panier[i].id
+        )
         totalPrice += panier[i].quantite * selectedProduct.price
     }
     return totalPrice
@@ -119,38 +128,43 @@ function displayQuantityPrice() {
     totalPriceContainer.textContent = sumPrice()
 }
 
-//Changer la quantité
+// Changer la quantité
 function changeQuantity() {
-    const itemsInputsQuantity = document.querySelectorAll(".itemquantity")
-    itemsInputsQuantity.forEach((itemInput) => {
+    const itemInputsQuantity = document.querySelectorAll(".itemQuantity")
+    itemInputsQuantity.forEach((itemInput) => {
         itemInput.addEventListener("change", (e) => {
             let newValue = parseInt(e.target.value)
             let articleSelected = itemInput.closest("article")
             let getIdForChange = articleSelected.dataset.id
             let getColorForChange = articleSelected.dataset.color
-            let foundProductFromPanier = panier.find((p) => (p.id && p.couleur) === (getIdForChange && getColorForChange))
+            let foundProductFromPanier = panier.find(
+                (p) => (p.id && p.couleur) === (getIdForChange && getColorForChange)
+            )
             console.log(foundProductFromPanier)
             if (newValue <= 0 || newValue > 100) {
                 alert("Veuillez séléctionner une quantité entre 1 et 100")
+                //e.target.value = 1
             } else {
                 foundProductFromPanier.quantite = newValue
                 savePanier(foundProductFromPanier)
                 displayQuantityPrice()
             }
         })
-    });
+    })
 }
 
-//Supprimer un produit
-function deleteProducts() {
+// Supprimer un produit
+function deleteProduct() {
     const itemButtonsDelete = document.querySelectorAll(".deleteItem")
     itemButtonsDelete.forEach((itemButton) => {
         itemButton.addEventListener("click", (e) => {
             let articleSelected = itemButton.closest("article")
             let getIdForDelete = articleSelected.dataset.id
             let getColorForDelete = articleSelected.dataset.color
-            if (confirm("Souhaitez vous vraiment supprimer ce produit")) {
-                panier = panier.filter((p) => (p.id && p.color) !== (getIdForDelete && getColorForDelete))
+            if (confirm("Souhaitez-vous vraiment supprimer ce produit")) {
+                panier = panier.filter(
+                    (p) => (p.id && p.color) !== (getIdForDelete && getColorForDelete)
+                )
                 savePanier()
                 displayQuantityPrice()
                 articleSelected.remove()
