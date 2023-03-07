@@ -104,11 +104,15 @@ function displayQuantityPrice() {
 function displayCartProducts() {
   basket = getBasket()
 
+  cartItem = document.getElementById("cart__items");
+
+
+
   for (let i = 0; i < basket.length; i++) {
     const selectedProduct = allProducts.find(
       (product) => product._id == basket[i].id
     )
-    document.getElementById("cart__items").innerHTML += `
+    cartItem.innerHTML += `
     <article class="cart__item" data-id="${basket[i].id}" data-color="${basket[i].color}">
     <div class="cart__item__img">
       <img src="${selectedProduct.imageUrl}" alt="${selectedProduct.altTxt}">
@@ -149,7 +153,8 @@ function changeQuantity() {
       )
       if (newValue <= 0 || newValue > 100) {
         alert("Veuillez séléctionner une quantité entre 1 et 100")
-        e.target.value = 1
+        //e.target.value = 1
+        location.reload();
       } else {
         foundProductFromBasket.quantity = newValue
         saveBasket()
