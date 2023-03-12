@@ -10,9 +10,9 @@ let orderId = null
 const form = document.querySelector(".cart__order__form")
 const formDiv = document.querySelectorAll(".cart__order__form__question")
 //Regex
-const regexText = /^[a-z àâäçéèêëîïôöùûüÿ'-]+$/i
-const regexAddress = /^[0-9a-z àâäçéèêëîïôöùûüÿ'-]+$/i
-const regexEmail = /^[\w_.-]+@[\w-]+\.[a-z]{2,4}$/i
+const regexText = /^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{3,15}$/i;
+const regexAddress = /^[0-9a-z àâäçéèêëîïôöùûüÿ'-]{3,25}$/i;
+const regexEmail = /^[\w_.-]+@[\w-]+\.[a-z]{2,4}$/i;
 //Variable pour la vérification avant l'envoi du formulaire
 //Si une des variables est null : pas d'envoi à l'API
 //Si la les 5 variables sont afféctées d'une valeur : envoi de la requête à l'API
@@ -106,36 +106,100 @@ function displayCartProducts() {
 
   cartItem = document.getElementById("cart__items");
 
-
-
   for (let i = 0; i < basket.length; i++) {
-    const selectedProduct = allProducts.find(
+
+    //Récupération des caractéristiques du produit dans le panier
+    const productId = basket[i].id;
+    const productNumber = basket[i].quantity;
+    const productColor = basket[i].color;
+
+    //Récupération des autres caractéristiques du produit depuis l'API
+    const product = allProducts.find(
       (product) => product._id == basket[i].id
     )
-    cartItem.innerHTML += `
-    <article class="cart__item" data-id="${basket[i].id}" data-color="${basket[i].color}">
-    <div class="cart__item__img">
-      <img src="${selectedProduct.imageUrl}" alt="${selectedProduct.altTxt}">
-    </div>
-    <div class="cart__item__content">
-      <div class="cart__item__content__description">
-        <h2>${selectedProduct.name}</h2>
-        <p>${basket[i].color}</p>
-        <p>${selectedProduct.price} €</p>
-      </div>
-      <div class="cart__item__content__settings">
-        <div class="cart__item__content__settings__quantity">
-          <p>Qté : </p>
-          <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${basket[i].quantity}">
-        </div>
-        <div class="cart__item__content__settings__delete">
-          <p class="deleteItem">Supprimer</p>
-        </div>
-      </div>
-    </div>
-  </article>
-  `
+
+    //Création de la div article qui contiendra la carte du produit avec ajout d'un data id et color
+    let productElement = document.createElement("article");
+    productElement.classList.add("cart__item");
+    productElement.dataset.id = productId;
+    productElement.dataset.color = productColor;
+    cartItem.appendChild(productElement);
+
+    //Ajout de l'image de produit et de son container
+    let productImageContainer = document.createElement("div");
+    productImageContainer.classList.add("cart__item__img");
+    let productImage = document.createElement("img");
+    productImage.src = product.imageUrl;
+    productImage.alt = product.altTxt;
+    productElement.appendChild(productImageContainer);
+    productImageContainer.appendChild(productImage);
+
+    //Ajout du container pour le corps de la carte produit
+    let productContentContainer = document.createElement("div");
+    productContentContainer.classList.add("cart__item__content");
+    productElement.appendChild(productContentContainer);
+
+    //Ajout du container pour la description du produit
+    let productDescriptionContainer = document.createElement("div");
+    productDescriptionContainer.classList.add(
+      "cart__item__content__description"
+    );
+    productContentContainer.appendChild(productDescriptionContainer);
+
+    //Ajout du nom de produit
+    let productName = document.createElement("h2");
+    productName.textContent = product.name;
+    productDescriptionContainer.appendChild(productName);
+
+    //Ajout de la couleur du produit
+    let color = document.createElement("p");
+    color.textContent = productColor;
+    productDescriptionContainer.appendChild(color);
+
+    //Ajout du prix du produit
+    let ProductPrice = document.createElement("p");
+    ProductPrice.textContent = product.price + " €";
+    productDescriptionContainer.appendChild(ProductPrice);
+
+    //Ajout du conteneur pour les réglages
+    let productSettings = document.createElement("div");
+    productSettings.classList.add("cart__item__content__settings");
+    productContentContainer.appendChild(productSettings);
+
+    //Ajout du container pour les réglages de quantité
+    let productSettingsQuantityContainer = document.createElement("div");
+    productSettingsQuantityContainer.classList.add(
+      "cart__item__content__settings__quantity"
+    );
+    productSettings.appendChild(productSettingsQuantityContainer);
+
+    //Ajout de l'input pour régler la quantité et de son text
+    let productSettingsQuantityText = document.createElement("p");
+    productSettingsQuantityText.textContent = "Qté : ";
+    let productSettingsQuantity = document.createElement("input");
+    productSettingsQuantity.setAttribute("type", "number");
+    productSettingsQuantity.classList.add("itemQuantity");
+    productSettingsQuantity.setAttribute("name", "itemQuantity");
+    productSettingsQuantity.setAttribute("min", "1");
+    productSettingsQuantity.setAttribute("max", "100");
+    productSettingsQuantity.setAttribute("value", productNumber);
+    productSettingsQuantityContainer.appendChild(productSettingsQuantityText);
+    productSettingsQuantityContainer.appendChild(productSettingsQuantity);
+
+    //Ajout du container du bouton de suppression du produit
+    let productDeleteContainer = document.createElement("div");
+    productDeleteContainer.classList.add(
+      "cart__item__content__settings__delete"
+    );
+    productSettings.appendChild(productDeleteContainer);
+
+    //Ajout du bouton de suppression et de son texte
+    let productDelete = document.createElement("p");
+    productDelete.classList.add("deleteItem");
+    productDelete.textContent = "Supprimer";
+    productDeleteContainer.appendChild(productDelete);
   }
+
   displayQuantityPrice()
 }
 
@@ -296,7 +360,7 @@ form.addEventListener("submit", async (e) => {
     city.value = ""
     email.value = ""
     //Vider le panier après commande
-    basket = []
+    localStorage.clear();
     saveBasket()
     //Redirection vers la page de confirmation
     window.location.href = `./confirmation.html?orderId=${orderId}`
