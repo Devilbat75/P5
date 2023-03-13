@@ -4,3 +4,4 @@ const orderId = url.searchParams.get("orderId")
 
 const orderIdContainer = document.getElementById("orderId")
 orderIdContainer.textContent = orderId
+localStorage.clear ();
