@@ -10,8 +10,8 @@ let orderId = null
 const form = document.querySelector(".cart__order__form")
 const formDiv = document.querySelectorAll(".cart__order__form__question")
 //Regex
-const regexText = /^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{3,15}$/i;
-const regexAddress = /^[0-9a-z àâäçéèêëîïôöùûüÿ'-]{3,25}$/i;
+const regexText = /^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœ\s-]{3,35}$/i;
+const regexAddress = /^[0-9a-z àâäçéèêëîïôöùûüÿ'-]{3,40}$/i;
 const regexEmail = /^[\w_.-]+@[\w-]+\.[a-z]{2,4}$/i;
 //Variable pour la vérification avant l'envoi du formulaire
 //Si une des variables est null : pas d'envoi à l'API
